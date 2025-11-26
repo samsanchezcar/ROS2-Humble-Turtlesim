@@ -14,7 +14,7 @@ setup(
     install_requires=['setuptools'],
     zip_safe=True,
     maintainer='samsanchez',
-    maintainer_email='samsanchez@todo.todo',
+    maintainer_email='samsanchezcar@gmail.com',
     description='TODO: Package description',
     license='TODO: License declaration',
     extras_require={
@@ -24,6 +24,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
+            'move_turtle = my_turtle_controller.move_turtle:main',
         ],
     },
 )
