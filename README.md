@@ -258,14 +258,13 @@ El nodo mantiene un estimado de:
 ## 🏗️ Arquitectura del sistema
 
 ### Componentes de ROS 2
-
 ```mermaid
 graph TB
-    A[move_turtle.py<br/>TurtleController Node]
-    B[turtlesim_node<br/>Simulator]
-    C[/turtle1/cmd_vel<br/>Topic: Twist]
-    D[/clear<br/>Service: Empty]
-    E[/turtle1/set_pen<br/>Service: SetPen]
+    A["move_turtle.pyTurtleController Node"]
+    B["turtlesim_nodeSimulator"]
+    C["Topic: /turtle1/cmd_velType: Twist"]
+    D["Service: /clearType: Empty"]
+    E["Service: /turtle1/set_penType: SetPen"]
     
     A -->|Publica mensajes Twist| C
     C -->|Suscrito| B
@@ -280,6 +279,7 @@ graph TB
     style D fill:#ff8b94
     style E fill:#ff8b94
 ```
+
 
 ### Descripción de componentes
 
