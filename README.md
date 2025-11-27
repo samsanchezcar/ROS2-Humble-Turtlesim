@@ -272,12 +272,6 @@ graph TB
     A -.->|Llama servicio| E
     D -.->|Ejecuta| B
     E -.->|Ejecuta| B
-    
-    style A fill:#a8e6cf
-    style B fill:#ffd3b6
-    style C fill:#ffaaa5
-    style D fill:#ff8b94
-    style E fill:#ff8b94
 ```
 
 
@@ -345,13 +339,6 @@ flowchart TD
     CheckUtil -->|R| ResetAngle --> WaitKey
     CheckUtil -->|Q| Quit --> End
     CheckUtil -->|No| WaitKey
-    
-    style Start fill:#90EE90
-    style End fill:#FFB6C1
-    style DrawS fill:#87CEEB
-    style DrawA fill:#87CEEB
-    style DrawD fill:#87CEEB
-    style DrawC fill:#87CEEB
 ```
 
 ---
