@@ -1,7 +1,5 @@
-# 🐢 ROS2-Humble-Turtlesim
-
 <div align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&height=180&section=header&text=ROS%202%20Humble%20%E2%80%A2%20Turtlesim&fontSize=40&desc=Laboratorio%20No.%2004%20%E2%80%A2%20Rob%C3%B3tica%20de%20Desarrollo&descSize=16&animation=fadeIn" width="100%" />
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&height=180&section=header&text=🐢%ROS%202%20Humble%20%E2%80%A2%20Turtlesim&fontSize=40&desc=Laboratorio%20No.%2004%20%E2%80%A2%20Rob%C3%B3tica%20de%20Desarrollo&descSize=16&animation=fadeIn" width="100%" />
 </div>
 
 ---
@@ -15,11 +13,12 @@
 - **Samuel David Sanchez Cardenas** — Desarrollo del nodo, implementación de letras y documentación.  
   [![GitHub samsanchezcar](https://img.shields.io/badge/GitHub-%40samsanchezcar-181717?style=for-the-badge&logo=github)](https://github.com/samsanchezcar)
 - **Santiago Ávila** — Diseño de trayectorias, pruebas y documentación.  
-  [![GitHub Santiago Ávila](https://img.shields.io/badge/GitHub-Search--Santiago%20%C3%81vila-181717?style=for-the-badge&logo=github)](https://github.com/search?q=Santiago+Avila)
+  [![GitHub Santiago Ávila](https://img.shields.io/badge/GitHub-Santiago%20%C3%81vila-181717?style=for-the-badge&logo=github)](https://github.com/Santiago-Avila)
 
 ---
 
 ## 📂 Estructura del repositorio
+
 ```text
 ROS2-Humble-Turtlesim/
 ├── Laboratorio_No__04___2025_II___Robótica_de_Desarrollo__Intro_a_ROS__Copy_.pdf
@@ -130,6 +129,7 @@ Es altamente recomendable haber completado:
 ### 1. Instalación de ROS 2 Humble
 
 Si aún no tienes ROS 2 Humble instalado, sigue la [guía oficial](https://docs.ros.org/en/humble/Installation.html):
+
 ```bash
 # Configurar locale
 sudo apt update && sudo apt install locales
@@ -150,16 +150,19 @@ sudo apt install ros-humble-desktop
 ```
 
 ### 2. Instalación de Turtlesim
+
 ```bash
 sudo apt install ros-humble-turtlesim
 ```
 
 ### 3. Instalación de dependencias de Python
+
 ```bash
 pip install pynput
 ```
 
 ### 4. Configuración del workspace
+
 ```bash
 # Clonar el repositorio
 git clone <URL_DEL_REPOSITORIO>
@@ -174,6 +177,7 @@ source install/setup.bash
 ```
 
 ### 5. Verificación de la instalación
+
 ```bash
 # Terminal 1: Ejecutar Turtlesim
 ros2 run turtlesim turtlesim_node
@@ -199,6 +203,7 @@ El nodo responde a las **flechas del teclado** para mover la tortuga:
 | → | Girar a la derecha (velocidad angular negativa) |
 
 **Implementación:**
+
 ```python
 def on_key_press(self, key):
     msg = Twist()
@@ -253,31 +258,27 @@ El nodo mantiene un estimado de:
 ## 🏗️ Arquitectura del sistema
 
 ### Componentes de ROS 2
+
 ```mermaid
-graph LR
-    subgraph "Nodo TurtleController"
-        A[move_turtle.py]
-    end
+graph TB
+    A[move_turtle.py<br/>TurtleController Node]
+    B[turtlesim_node<br/>Simulator]
+    C[/turtle1/cmd_vel<br/>Topic: Twist]
+    D[/clear<br/>Service: Empty]
+    E[/turtle1/set_pen<br/>Service: SetPen]
     
-    subgraph "Nodo Turtlesim"
-        B[turtlesim_node]
-    end
-    
-    subgraph "Tópicos"
-        C[/turtle1/cmd_vel]
-    end
-    
-    subgraph "Servicios"
-        D[/clear]
-        E[/turtle1/set_pen]
-    end
-    
-    A -->|Publica Twist| C
+    A -->|Publica mensajes Twist| C
     C -->|Suscrito| B
-    A -.->|Llama| D
-    A -.->|Llama| E
+    A -.->|Llama servicio| D
+    A -.->|Llama servicio| E
     D -.->|Ejecuta| B
     E -.->|Ejecuta| B
+    
+    style A fill:#a8e6cf
+    style B fill:#ffd3b6
+    style C fill:#ffaaa5
+    style D fill:#ff8b94
+    style E fill:#ff8b94
 ```
 
 ### Descripción de componentes
@@ -299,46 +300,35 @@ graph LR
 ---
 
 ## 📊 Diagrama de flujo
+
 ```mermaid
 flowchart TD
     Start([Inicio del Nodo])
     Init[Inicializar Nodo ROS 2<br/>Publisher + Clientes de Servicio]
     PrintHelp[Mostrar menú de controles]
     StartListener[Iniciar Listener de Teclado]
+    WaitKey{Esperar evento<br/>de teclado}
     
-    subgraph MainLoop["Loop Principal"]
-        WaitKey{Esperar<br/>evento de<br/>teclado}
-        
-        subgraph ArrowKeys["Flechas Direccionales"]
-            CheckArrow{¿Es flecha?}
-            MoveLinear[Publicar Twist<br/>con velocidad lineal/angular]
-            StopOnRelease[Detener al soltar tecla]
-        end
-        
-        subgraph LetterKeys["Teclas de Letras"]
-            CheckLetter{¿Es letra?}
-            
-            DrawS[Dibujar S:<br/>4 arcos curvos<br/>alternados]
-            DrawA[Dibujar A:<br/>2 diagonales +<br/>barra horizontal]
-            DrawD[Dibujar D:<br/>línea vertical +<br/>semicírculo]
-            DrawC[Dibujar C:<br/>semicírculo abierto]
-            
-            AddSpace[Añadir espaciado<br/>entre letras]
-        end
-        
-        subgraph UtilityKeys["Teclas de Utilidad"]
-            CheckUtil{¿Es utilidad?}
-            
-            ClearScreen[Llamar servicio<br/>/clear]
-            TogglePen[Toggle<br/>lápiz arriba/abajo]
-            ResetAngle[Alinear a 0°]
-            Quit[Finalizar ejecución]
-        end
-    end
+    CheckArrow{¿Es flecha<br/>direccional?}
+    MoveLinear[Publicar Twist con<br/>velocidad lineal/angular]
+    StopOnRelease[Detener al<br/>soltar tecla]
+    
+    CheckLetter{¿Es letra<br/>S/A/D/C?}
+    DrawS[Dibujar S:<br/>4 arcos curvos alternados]
+    DrawA[Dibujar A:<br/>2 diagonales + barra horizontal]
+    DrawD[Dibujar D:<br/>línea vertical + semicírculo]
+    DrawC[Dibujar C:<br/>semicírculo abierto]
+    AddSpace[Añadir espaciado<br/>entre letras]
+    
+    CheckUtil{¿Es tecla<br/>de utilidad?}
+    ClearScreen[Llamar servicio /clear]
+    TogglePen[Toggle lápiz arriba/abajo]
+    ResetAngle[Alinear a 0°]
+    Quit[Finalizar ejecución]
     
     End([Fin del Nodo])
     
-    Start --> Init --> PrintHelp --> StartListener --> MainLoop
+    Start --> Init --> PrintHelp --> StartListener --> WaitKey
     
     WaitKey --> CheckArrow
     CheckArrow -->|Sí| MoveLinear --> StopOnRelease --> WaitKey
@@ -378,6 +368,7 @@ flowchart TD
 4. Avanzar 1.1 segundos (pierna derecha)
 5. Retroceder 50% para posicionar barra central
 6. Girar 180° y trazar barra horizontal
+
 ```python
 def draw_A(self):
     self._prepare_letter()
@@ -413,6 +404,7 @@ Semicírculo abierto hacia la derecha
 2. Trazar línea horizontal corta hacia la izquierda
 3. Arco grande de 180° con `arc(lin, ang, duration)`
 4. Línea horizontal corta hacia la derecha
+
 ```python
 def draw_C(self):
     self._prepare_letter()
@@ -449,6 +441,7 @@ Línea vertical + semicírculo derecho cerrado
 2. Línea horizontal corta
 3. Arco de 180° hacia abajo (angular negativo)
 4. Cerrar con línea horizontal
+
 ```python
 def draw_D(self):
     self._prepare_letter()
@@ -481,6 +474,7 @@ Cuatro arcos alternados formando curva en S
 2. Arco transición central (subiendo)
 3. Arco transición superior (bajando)
 4. Arco superior izquierdo (terminando)
+
 ```python
 def draw_S(self):
     self._prepare_letter()
@@ -509,6 +503,7 @@ def draw_S(self):
 ### Paso 1: Lanzar Turtlesim
 
 En una terminal, ejecuta:
+
 ```bash
 source /opt/ros/humble/setup.bash
 ros2 run turtlesim turtlesim_node
@@ -519,6 +514,7 @@ Deberías ver una ventana con una tortuga en el centro.
 ### Paso 2: Lanzar el controlador
 
 En **otra terminal**:
+
 ```bash
 cd ~/Documents/Robotics/ROS/ROS2-Humble-Turtlesim/ros2_ws
 source install/setup.bash
@@ -526,6 +522,7 @@ ros2 run my_turtle_controller move_turtle
 ```
 
 Verás el menú de controles en la consola:
+
 ```
 ==================================================
 TURTLE CONTROLLER - Controles:
