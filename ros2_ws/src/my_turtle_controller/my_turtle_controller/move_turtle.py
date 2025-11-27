@@ -46,7 +46,7 @@ class TurtleController(Node):
 
         # Color del lápiz
         self.pen_color = (170, 130, 230)
-        self.pen_width = 5
+        self.pen_width = 3
 
         self._print_help()
 
